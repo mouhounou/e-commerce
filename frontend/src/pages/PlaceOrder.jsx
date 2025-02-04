@@ -67,7 +67,7 @@ function PlaceOrder() {
             </div>
           </div>
           <div className="w-full text-end mt-8">
-            <button onClick={() => navigate('/orders')} className='bg-black text-white px-16 py-3 text-sm'>PLACE ORDER</button>
+            <button onClick={() => navigate('/order')} className='bg-black text-white px-16 py-3 text-sm'>PLACE ORDER</button>
           </div>
         </div>
       </div>

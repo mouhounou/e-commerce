@@ -8,11 +8,11 @@ import Products from './pages/Products'
 import Card from './pages/Card'
 import Login from './pages/Login'
 import PlaceOrder from './pages/PlaceOrder'
-import Order from './pages/Order'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import SearchBar from './components/SearchBar'
 import { ToastContainer, toast } from 'react-toastify';
+import Orders from './pages/Orders'
 
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
         <Route path='/card' element={<Card/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/place-order' element={<PlaceOrder/>}/>
-        <Route path='/order' element={<Order/>}/>
+        <Route path='/order' element={<Orders/>}/>
       </Routes>
       <Footer/>
     </div>
