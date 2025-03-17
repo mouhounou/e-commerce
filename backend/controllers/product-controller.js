@@ -3,64 +3,93 @@ import fs from 'fs';
 import { json } from 'stream/consumers';
 import productModel from '../models/productModel.js';
 
-
-// add product 
 const addProduct = async (req, res) => {
-  try{
-    const {name, price, description, category, subCategory, size, bestSeller} = req.body;
+	try {
+		const {
+			name,
+			price,
+			description,
+			category,
+			subCategory,
+			size,
+			bestSeller,
+		} = req.body;
 
-    // Accéder aux fichiers correctement
-    const image1 = req.files.image1 ? req.files.image1[0] : null;
-    const image2 = req.files.image2 ? req.files.image2[0] : null;
-    const image3 = req.files.image3 ? req.files.image3[0] : null;
-    const image4 = req.files.image4 ? req.files.image4[0] : null;
+		// Vérification des fichiers dans req.files
+		const image1 = req.files.image1 ? req.files.image1[0] : null;
+		const image2 = req.files.image2 ? req.files.image2[0] : null;
+		const image3 = req.files.image3 ? req.files.image3[0] : null;
+		const image4 = req.files.image4 ? req.files.image4[0] : null;
 
-    const images = [image1, image2, image3, image4].filter((item) => item !== undefined)
+		// Filtrer les images nulles
+		const images = [image1, image2, image3, image4].filter(
+			(item) => item !== null
+		);
 
-    let imagesUrl = await Promise.all(
-      images.map(async(item) => {
-        let result = await cloudinary.uploader.upload(item.path, {resource_type: 'image'});
-        return result.secure_url
-      })
-    )
-    console.log('====================================');
-    console.log(name, price, description, category, subCategory, size, bestSeller);
-    console.log(imagesUrl);
-    console.log('====================================');
+		// Si aucune image n'a été téléchargée, renvoyer une erreur
+		if (images.length === 0) {
+			return res.status(400).json({
+				success: false,
+				message: "Aucune image téléchargée.",
+			});
+		}
 
-    const productData = {
-      name,
-      description,
-      category,
-      price : Number(price),
-      subCategory,
-      bestSeller : bestSeller === "true" ? true : false,
-      size : JSON.parse(size),
-      image : imagesUrl,
-      date : Date.now()
-    }
+		// Uploader les images vers Cloudinary
+		let imagesUrl = await Promise.all(
+			images.map(async (item) => {
+				if (item && item.path) {
+					let result = await cloudinary.uploader.upload(item.path, {
+						resource_type: "image",
+					});
+					return result.secure_url;
+				} else {
+					throw new Error("Fichier invalide");
+				}
+			})
+		);
 
-    console.log('====================================');
-    console.log(productData);
-    console.log('====================================');
+		console.log(
+			name,
+			price,
+			description,
+			category,
+			subCategory,
+			size,
+			bestSeller
+		);
+		console.log(imagesUrl);
 
-    const product = new productModel(productData)
-    await product.save();
+		const productData = {
+			name,
+			description,
+			category,
+			price: Number(price),
+			subCategory,
+			bestSeller: bestSeller === "true" ? true : false,
+			size: JSON.parse(size),
+			image: imagesUrl,
+			date: Date.now(),
+		};
 
-    res.json({
-      success: true,
-      message: 'Product added successfully',
-      product : product
-    })
+		console.log(productData);
 
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({
-        success: false,
-        message: err.message
-    });
-  }
-}
+		// Enregistrer le produit dans la base de données
+		const product = new productModel(productData);
+		await product.save();
+
+		res.json({
+			success: true,
+			message: "Product added successfully",
+			product: product,
+		});
+	} catch (err) {
+		console.error(err);
+		return res.status(500).json({
+			success: false,
+			message: err.message,
+		});
+	}
+};
 
 
 // get all products
