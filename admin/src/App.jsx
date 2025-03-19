@@ -6,8 +6,9 @@ import Add from './pages/Add'
 import List from './pages/List'
 import Order from './pages/Order'
 import Login from './components/Login'
-  import { ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
+export const currency = '$'
 
 
 

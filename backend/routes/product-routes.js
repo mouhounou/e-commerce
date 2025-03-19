@@ -10,11 +10,11 @@ productRouter.post('/add', upload.fields([
     { name: "image3", maxCount: 1 },
     { name: "image4", maxCount: 1 }
 ]), addProduct);
-productRouter.post('/single', singleProduct);
+productRouter.post("/single", singleProduct);
 
 productRouter.get('/list', listProducts);
 
-productRouter.post('/remove', adminAuth ,removeProduct);
+productRouter.post('/remove',removeProduct);
 
 
 export default productRouter;

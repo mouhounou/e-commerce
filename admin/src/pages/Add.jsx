@@ -160,11 +160,17 @@ function Add({token}) {
         </div>
 
         <div className='flex gap-2 mt-2 items-center'>
-          <input onChange={prev => setBestseller(!prev)} checked ={bestSeller} type="checkbox" id='bestseller' />
+          <input 
+            onChange={() => setBestseller(prev => !prev)} 
+            checked={bestSeller} 
+            type="checkbox" 
+            id='bestseller' 
+          />
           <label className='cursor-pointer' htmlFor="bestseller">Add to bestseller</label>
         </div>
 
-        <button type="submit" className='w-28 py-3 mt-4 bg-black text-white'></button>
+
+        <button type="submit" className='w-28 py-3 mt-4 bg-black text-white rounded-md'>Add</button>
       </form>
     </div>
   )

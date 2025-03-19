@@ -115,50 +115,48 @@ const listProducts = async (req, res) => {
 
 // remove single product
 const removeProduct = async (req, res) => {
-  try{
-      await productModel.findByIdAndDelete(req.body.id)
-      res.status(200).json({
-          success: true,
-          message: 'Product removed successfully'
-      })
-  } catch(err){
-      console.log(err);
-      return res.status(500).json({
-          success: false,
-          message : "Erreur lors de la suppression du produit",
-          error: err.message
-      });
-  }
+	try{
+			await productModel.findByIdAndDelete(req.body.id)
+			res.status(200).json({
+				success: true,
+				message: 'Product removed successfully'
+			})
+	} catch(err){
+			console.log(err);
+			return res.status(500).json({
+				success: false,
+				message : "Erreur lors de la suppression du produit",
+				error: err.message
+			});
+	}
 }
 
 
 // remove single product
 const singleProduct = async (req, res) => {
-  try{
-    const {productId} = req.body;
-    console.log('====================================');
-    console.log(productId);
-    console.log('====================================');
-    const product = await productModel.findById(productId);
-    if(!product){
-        return res.status(404).json({
-            success: false,
-            message: 'Product not found'
-        })
-    }
-    res.status(200).json({
-        success: true,
-        message: 'Product retrieved successfully',
-        product
-    })
-  } catch(err){
-    console.log(err);
-    return res.status(500).json({
-        success: false,
-        message : "Erreur lors de la récupération du produit",
-        error: err.message
-    });
-  }
+	try{
+		const {productId} = req.body;
+		const products = await productModel.findById(productId);
+		
+		if (!products) {
+			return res.status(404).json({
+					success: false,
+					message: 'Product not found'
+			})
+		}
+		res.status(200).json({
+			success: true,
+			message: 'Product retrieved successfully',
+			products
+		})
+	} catch(err){
+		console.log(err);
+		return res.status(500).json({
+			success: false,
+			message : "Erreur lors de la récupération du produit",
+			error: err.message
+		});
+	}
 }
 
 
