@@ -1,6 +1,6 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ShopContext } from '../context/ShopContext'
-import axios from 'axios'
+import axios, { Axios } from 'axios'
 
 function Login() {
 
@@ -26,12 +26,26 @@ function Login() {
         }
         
       } else {
+        const response = await axios.post(backendUrl + '/api/user/login', { email, password })
+        
+        if (response.data.success) {
+          setToken(response.data.token)
+          localStorage.setItem('token', response.data.token)
+        } else {
+          alert(response.data.message)
+        }
         
       }
     } catch (error) {
       console.log(error)
     }
   }
+
+  useEffect(() => {
+    if (token) {
+      navigate('/')
+    }
+  },[token])
 
   return (
     <div>

@@ -32,14 +32,15 @@ const loginUser = async (req, res) => {
 
         // ckeck user password
         const isMatch = await bcrypt.compare(password, user.password)
-
-        if(isMatch){
+        if (isMatch) {
+            
             const  token = createToken(user._id)
             res.status(200).json({
                 success: true,
                 message : 'User logged in successfully',
                 token
             });
+
         } else{
             return res.status(401).json({
                 success: false,

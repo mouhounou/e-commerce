@@ -110,11 +110,15 @@ const ShopContextProvider = (props) => {
         }, 0);
     };
 
-    // Fetch products on component mount
     useEffect(() => {
         getProduct();
     }, []);
 
+    useEffect(() => {
+        if (!token && localStorage.getItem('token')) {
+            setToken(localStorage.getItem('token'))
+        }
+    },[])
     // Provide context values to children
     const value = {
         products,
@@ -133,6 +137,7 @@ const ShopContextProvider = (props) => {
         navigate,
         backendUrl,
         loading,
+        setCartItems,
         token,
         setToken
     };

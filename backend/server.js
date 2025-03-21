@@ -13,6 +13,7 @@ import connectDB from './config/mongodb.js';
 import connectCloudinary from './config/cloudinary.js';
 import userRouter from './routes/user-route.js';
 import productRouter from './routes/product-routes.js';
+import cartRouter from './routes/cart-routes.js';
 
 
 
@@ -39,7 +40,8 @@ app.use(
 
 // api endpoint
 app.use('/api/user', userRouter)
-app.use('/api/product', productRouter)
+app.use("/api/product", productRouter);
+app.use("/api/cart", cartRouter);
 
 // listen
 app.listen(port, () => console.log(`Server running on http://localhost:${port}`))
