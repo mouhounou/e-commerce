@@ -6,27 +6,26 @@ import CartTotal from '../components/CartTotal'
 
 function Card() {
 
-  const {products, currency, cardItems, updateQuantity, navigate} = useContext(ShopContext)
+  const {products, currency, cartItems, updateQuantity, navigate} = useContext(ShopContext)
 
   const [cardData, setCardData] = useState([])
 
   useEffect(() =>{
     const tempData = []
-    for( let items in cardItems ) {
-      for(let item in cardItems[items]) {
-        if(cardItems[items][item] > 0){
+    for( let items in cartItems ) {
+      for(let item in cartItems[items]) {
+        if(cartItems[items][item] > 0){
           tempData.push({
             _id: items,
             size: item,
-            quantity: cardItems[items][item],
+            quantity: cartItems[items][item],
           })
         }
       }
     }
-
     setCardData(tempData)
-
-  }, [cardItems])
+  }, [cartItems, products])
+  
 
   return (
     <div className='border-t pt-14'>

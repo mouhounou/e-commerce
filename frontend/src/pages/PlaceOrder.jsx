@@ -7,12 +7,29 @@ import { ShopContext } from '../context/ShopContext'
 function PlaceOrder() {
 
   const [method, setMethod ] = useState('cod')
-  
   const {navigate } = useContext(ShopContext)
   
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: '',
+    email: '',
+    street: '',
+    city: '',
+    state: '',
+    zipcode: '',
+    country: '',
+    phone: ''
+  })
+
+  const onchangeHandler = (e) => {
+    const name = e.target.name
+    const value = e.target.value
+
+    setFormData( data => ({...data, [name]:value}))
+  }
 
   return (
-    <div className='flex flex-col sm:flex-row justify-between gap-4 pt-5 min-h-[80vh]  border-t'>
+    <form className='flex flex-col sm:flex-row justify-between gap-4 pt-5 min-h-[80vh]  border-t'>
       {/* =============== left =============  */}
       <div className=' flex flex-col gap-4 w-full sm:max-w-[480px]'>
 
@@ -71,7 +88,7 @@ function PlaceOrder() {
           </div>
         </div>
       </div>
-    </div>
+    </form>
   )
 }
 

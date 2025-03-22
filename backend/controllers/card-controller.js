@@ -58,7 +58,8 @@ const addToCart = async (req, res) => {
 // Update product quantity in user cart
 const updateCart = async (req, res) => {
 	try {
-		const { userId, itemId, size, quantity } = req.body;
+		const {itemId, size, quantity } = req.body;
+		const userId = req.userId; 
 
 		if (
 			!userId ||
@@ -106,7 +107,7 @@ const updateCart = async (req, res) => {
 // Get user cart data
 const getUserCart = async (req, res) => {
 	try {
-		const { userId } = req.body;
+		const userId = req.userId; 
 
 		// Validate input
 		if (!userId) {

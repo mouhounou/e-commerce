@@ -14,6 +14,7 @@ import connectCloudinary from './config/cloudinary.js';
 import userRouter from './routes/user-route.js';
 import productRouter from './routes/product-routes.js';
 import cartRouter from './routes/cart-routes.js';
+import orderRouter from './routes/order-route.js';
 
 
 
@@ -42,6 +43,7 @@ app.use(
 app.use('/api/user', userRouter)
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/order", orderRouter);
 
 // listen
 app.listen(port, () => console.log(`Server running on http://localhost:${port}`))

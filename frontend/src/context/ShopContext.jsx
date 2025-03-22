@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 export const ShopContext = createContext();
-
+ 
 const ShopContextProvider = (props) => {
     const currency = '$';
     const delivery_fee = 10;
@@ -17,6 +17,7 @@ const ShopContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({});
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
 
     const getProduct = async () => {
         setLoading(true);
@@ -55,21 +56,21 @@ const ShopContextProvider = (props) => {
 
         setCartItems(updatedCart);
 
-        const token = localStorage.getItem("token"); // Vérifie si le token est bien récupéré
+        const token = localStorage.getItem("token");
 
         if (token) {
             try {
                 const response = await axios.post(
                     backendUrl + "/api/cart/add",
                     { itemId, size },
-                    { headers: { Authorization: `Bearer ${token}` } } // Envoie bien le token
+                    { headers: { Authorization: `Bearer ${token}` } } 
                 );
 
                 if (response.data.success) {
-                    toast.success("Item added to cart successfully!");
+                    alert("Item added to cart successfully!");
                 } else {
                     toast.error("Failed to add item to cart. Please try again.");
-                    setCartItems(cartItems); // Revert cart state on failure
+                    setCartItems(cartItems); 
                 }
             } catch (error) {
                 console.error("Error adding item to cart:", error.message);
@@ -101,7 +102,7 @@ const ShopContextProvider = (props) => {
     };
 
     // Update the quantity of an item in the cart
-    const updateQuantity = (itemId, size, quantity) => {
+    const updateQuantity = async (itemId, size, quantity) => {
 
         if (quantity < 1) {
             toast.error("Quantity must be at least 1");
@@ -113,6 +114,17 @@ const ShopContextProvider = (props) => {
         if (updatedCart[itemId]) {
             updatedCart[itemId][size] = quantity;
             setCartItems(updatedCart);
+        }
+
+        if (token) {
+            try {
+                await axios.post(
+                    backendUrl + '/api/cart/update', { itemId, size, quantity },
+                    { headers: { Authorization: `Bearer ${token}` } } 
+                )
+            } catch (error) {
+                console.log(error.message)
+            }
         }
     };
 
@@ -136,15 +148,46 @@ const ShopContextProvider = (props) => {
         }, 0);
     };
 
+    const getCartData = async () => {
+        if (!token) return;
+        try {
+            const response = await axios.post(`${backendUrl}/api/cart/get`, {}, { 
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (response.data.success) {
+                setCartItems(response.data.cartData);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération du panier :", error.message);
+        }
+    };
+
     useEffect(() => {
         getProduct();
     }, []);
 
     useEffect(() => {
-        if (!token && localStorage.getItem('token')) {
-            setToken(localStorage.getItem('token'))
+        if (!token) {
+            const storedToken = localStorage.getItem('token');
+            if (storedToken) {
+                setToken(storedToken);
+            }
         }
-    },[])
+    }, []);
+
+    
+    // useEffect(() => {
+    //     console.log('Le panier a été mis à jour :', cartItems);
+    // }, [cartItems]); 
+
+
+    useEffect(() => {
+        if (token) {
+            getCartData();
+        }
+    }, [token]); 
+
 
 
     const value = {
