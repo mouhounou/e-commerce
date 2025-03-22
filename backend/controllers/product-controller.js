@@ -3,6 +3,9 @@ import fs from 'fs';
 import { json } from 'stream/consumers';
 import productModel from '../models/productModel.js';
 
+
+
+
 const addProduct = async (req, res) => {
 	try {
 		const {
@@ -94,21 +97,21 @@ const addProduct = async (req, res) => {
 
 // get all products
 const listProducts = async (req, res) => {
-  try{
-    const products = await productModel.find({})
-    res.status(200).json({
-      success: true,
-      message: 'Products listed successfully',
-      products: products
-    })
-  } catch(err){
-    console.log(err);
-    return res.status(500).json({
-        success: false,
-        message : "Erreur lors de la recuperation des produit",
-        error: err.message
-    });
-  }
+	try{
+		const products = await productModel.find({})
+		res.status(200).json({
+			success: true,
+			message: 'Products listed successfully',
+			products: products
+		})
+	} catch(err){
+		console.log(err);
+		return res.status(500).json({
+			success: false,
+			message : "Erreur lors de la recuperation des produit",
+			error: err.message
+		});
+	}
 }
 
 

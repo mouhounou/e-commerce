@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +18,6 @@ const ShopContextProvider = (props) => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    // Fetch products from the backend
     const getProduct = async () => {
         setLoading(true);
         try {
@@ -35,10 +35,9 @@ const ShopContextProvider = (props) => {
         }
     };
 
-    // Add an item to the cart
     const addToCart = async (itemId, size) => {
         if (!size) {
-            // alert("Please select a size");
+            toast.error("Please select a size");
             return;
         }
 
@@ -55,17 +54,43 @@ const ShopContextProvider = (props) => {
         }
 
         setCartItems(updatedCart);
-        alert("Item added to cart!");
+
+        const token = localStorage.getItem("token"); // Vérifie si le token est bien récupéré
+
+        if (token) {
+            try {
+                const response = await axios.post(
+                    backendUrl + "/api/cart/add",
+                    { itemId, size },
+                    { headers: { Authorization: `Bearer ${token}` } } // Envoie bien le token
+                );
+
+                if (response.data.success) {
+                    toast.success("Item added to cart successfully!");
+                } else {
+                    toast.error("Failed to add item to cart. Please try again.");
+                    setCartItems(cartItems); // Revert cart state on failure
+                }
+            } catch (error) {
+                console.error("Error adding item to cart:", error.message);
+                toast.error("An error occurred. Please try again.");
+                setCartItems(cartItems);
+            }
+        } else {
+            toast.error("You must be logged in to add items to the cart.");
+        }
     };
 
-    // Remove an item from the cart
+
+
+
+    
     const removeFromCart = (itemId, size) => {
         const updatedCart = { ...cartItems };
 
         if (updatedCart[itemId] && updatedCart[itemId][size]) {
             delete updatedCart[itemId][size];
 
-            // If no sizes are left for the item, remove the item entirely
             if (Object.keys(updatedCart[itemId]).length === 0) {
                 delete updatedCart[itemId];
             }
@@ -77,6 +102,7 @@ const ShopContextProvider = (props) => {
 
     // Update the quantity of an item in the cart
     const updateQuantity = (itemId, size, quantity) => {
+
         if (quantity < 1) {
             toast.error("Quantity must be at least 1");
             return;
@@ -119,7 +145,8 @@ const ShopContextProvider = (props) => {
             setToken(localStorage.getItem('token'))
         }
     },[])
-    // Provide context values to children
+
+
     const value = {
         products,
         currency,
