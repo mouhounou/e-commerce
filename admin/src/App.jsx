@@ -9,6 +9,7 @@ import Login from './components/Login'
 import { ToastContainer } from 'react-toastify';
 
 export const currency = '$'
+export const backendUrl = "http://localhost:3004";
 
 
 

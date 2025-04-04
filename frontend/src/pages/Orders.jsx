@@ -1,14 +1,42 @@
-import React, { useContext } from 'react';
+import React, { useContext,  useEffect,  useState } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import Title from '../components/Title';
+import axios, { all } from 'axios';
 
 function Orders() {
-  const { products, currency } = useContext(ShopContext);
+  const { products, currency, backendUrl, token} = useContext(ShopContext);
 
-  console.log('Products:', products); 
-  console.log('Currency:', currency); 
+  const [orders, setOrders] = useState([]);
 
+  const loadOrderData = async () => {
+    const data = await axios.get(backendUrl + '/api/order/userOrders', { headers: { Authorization: `Bearer ${token}` } })
+    console.log(data.data);
 
+    if (data.data.success) {
+      let allOrderItem = []
+
+      data.data.orders.map((order) => (
+        order.items.map((item) => (
+          item['status'] = order.status,
+          item['payment'] = order.payment,
+          item['paymentMethod'] = order.paymentMethod,
+          item['date'] = order.date,
+          allOrderItem.push(item)
+        ))
+      ))
+
+      setOrders(allOrderItem.reverse());
+      
+    }
+  }
+
+  useEffect(() => {
+    loadOrderData()
+  }, [])
+
+  console.log('================== order ======================');
+  console.log(orders);
+  
   return (
     <div>
       <div className="border-t pt-16">
@@ -17,7 +45,8 @@ function Orders() {
         </div>
 
         <div className="">
-          {products.slice(1, 4).map((item, index) => (
+          {
+            orders.map((item, index) => (
             <div key={index} className='py-4 border-b text-gray-700 flex flex-col md:flex-row md:items-center justify-between gap-4'>
               
               <div className="flex items-start gap-6 text-sm">
@@ -26,11 +55,14 @@ function Orders() {
                   <p className='sm:text-base font-medium'>{item.name}</p>
                   <div className="flex items-center gap-3 mt-2 text-base text-gray-500">
                     <p className='text-lg'>{currency}{item.price}</p>
-                    <p>Quantity : 1</p>
-                    <p>Size : M</p>
+                    <p>Quantity : { item.quantity}</p>
+                      <p>Size : { item.size}</p>
                   </div>
                   <p>
-                    Date <span className='text-gray-400'>25, jul, 2024</span>
+                      Date <span className='text-gray-400'> : { new Date(item.date).toDateString()}</span>
+                  </p>
+                  <p>
+                      payment <span className='text-gray-400'> : { item.paymentMethod}</span>
                   </p>
                 </div>
               </div>
@@ -39,9 +71,9 @@ function Orders() {
 
                 <div className="flex items-center gap-2">
                   <p className='min-w-2 h-2 rounded-full bg-green-500'></p>
-                  <p className='text-sm'>Ready to ship</p>
+                    <p className='text-sm'>{ item.status}</p>
                 </div>
-                <button className='border px-4 py-2 text-sm font-medium rounded-sm'>TRACK ORDER</button>
+                <button  onClick={loadOrderData} className='border px-4 py-2 text-sm font-medium rounded-sm'>TRACK ORDER</button>
               </div>
             </div>
           ))}

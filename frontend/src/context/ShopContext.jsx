@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 export const ShopContext = createContext();
- 
+
 const ShopContextProvider = (props) => {
     const currency = '$';
     const delivery_fee = 10;
@@ -30,7 +30,7 @@ const ShopContextProvider = (props) => {
             }
         } catch (error) {
             console.error("Error fetching products:", error.message);
-            toast.error("Failed to fetch products. Please try again later.");
+            console.log("Failed to fetch products. Please try again later.");
         } finally {
             setLoading(false);
         }
